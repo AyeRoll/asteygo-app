@@ -25,6 +25,22 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Address autocomplete provider (free to start)
+
+This app supports multiple geocoding/autocomplete providers. Configure them via `app.json` under `expo.extra`:
+
+- `geocodingProvider`: one of `maps-co` (default), `google`, or `mapbox`.
+- `geocodeMapsApiKey`: API key for https://geocode.maps.co (generous free tier; easiest to start).
+- `googlePlacesApiKey`: Google Places API key (when using `google`). The UI will show the required “Powered by Google” attribution.
+- `mapboxAccessToken`: Mapbox token (when using `mapbox`). Be aware of Mapbox’s terms requiring use with a Mapbox map.
+
+After changing `app.json`, restart the dev server so the `extra` values reload.
+
+Files to see:
+
+- `components/AddressAutocomplete.tsx` – debounced search with provider fallback.
+- `services/geocoding.ts` – pluggable providers implementation.
+
 ## Get a fresh project
 
 When you're ready, run:

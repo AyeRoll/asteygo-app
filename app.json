@@ -37,6 +37,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "geocodingProvider": "maps-co",
+      "geocodeMapsApiKey": "PUT_YOUR_MAPS_CO_KEY_HERE",
+      "googlePlacesApiKey": "",
+      "mapboxAccessToken": ""
     }
   }
 }
