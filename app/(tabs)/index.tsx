@@ -332,7 +332,7 @@ export default function Dashboard() {
 
   return (
     // Main container with safe area padding
-  <View style={[styles.safeArea, { paddingTop: insets.top, backgroundColor: '#f3f4f6' }]}>
+  <View style={[styles.safeArea, { paddingTop: insets.top, backgroundColor: '#f9fafb' }]}>
       <ScrollView contentContainerStyle={[combinedStyles.scrollViewContent, { paddingBottom: 32 + insets.bottom + 50 },]}>
         <View style={localStyles.headerRow}>
           <TouchableOpacity 
@@ -366,38 +366,38 @@ export default function Dashboard() {
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={localStyles.quickRow}>
           <TouchableOpacity onPress={() => handleQuickInfoClick('weather')} style={localStyles.quickPill}>
-            <View style={localStyles.iconCircle}>
-              <Ionicons name="sunny-outline" size={35} color="#f59e0b" />
-            </View>
-            <Text style={localStyles.quickTitle}>{quickInfo.temp ? `${quickInfo.temp}°F` : '72°F'}</Text>
+            <View style={{...localStyles.iconCircle}}>
+              <Ionicons name="sunny-outline" size={30} color="#ffa200ff" />
+              <Text style={localStyles.quickTitle}>{quickInfo.temp ? `${quickInfo.temp}°F` : '72°F'}</Text>
+            </View>  
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => handleQuickInfoClick('food')} style={localStyles.quickPill}>
             <View style={localStyles.iconCircle}>
-              <Ionicons name="restaurant-outline" size={35} color="#10b981" />
+              <Ionicons name="restaurant-outline" size={30} color="#10b981" />
+              <Text style={localStyles.quickTitle}>{quickInfo.food || 'Local Bistro'}</Text>
             </View>
-            <Text style={localStyles.quickTitle}>{quickInfo.food || 'Local Bistro'}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => handleQuickInfoClick('gas')} style={localStyles.quickPill}>
             <View style={localStyles.iconCircle}>
-              <Ionicons name="car-outline" size={35} color="#3b82f6" />
+              <Ionicons name="car-outline" size={30} color="#3b82f6" />
+              <Text style={localStyles.quickTitle}>{quickInfo.gas || 'Shell'}</Text>
             </View>
-            <Text style={localStyles.quickTitle}>{quickInfo.gas || 'Shell'}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => handleQuickInfoClick('ev')} style={localStyles.quickPill}>
             <View style={localStyles.iconCircle}>
-              <Ionicons name="flash-outline" size={35} color="#22c55e" />
+              <Ionicons name="flash-outline" size={30} color="#00ff15ff" />
+              <Text style={localStyles.quickTitle}>{quickInfo.ev || 'EV Charger'}</Text>          
             </View>
-            <Text style={localStyles.quickTitle}>{quickInfo.ev || 'EV Charger'}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => handleQuickInfoClick('hotel')} style={localStyles.quickPill}>
             <View style={localStyles.iconCircle}>
-              <Ionicons name="bed-outline" size={35} color="#8b5cf6" />
+              <Ionicons name="bed-outline" size={30} color="#8b5cf6" />
+              <Text style={localStyles.quickTitle}>{quickInfo.hotel || 'Hotel'}</Text>          
             </View>
-            <Text style={localStyles.quickTitle}>{quickInfo.hotel || 'Hotel'}</Text>
           </TouchableOpacity>
         </ScrollView>
 
@@ -684,23 +684,41 @@ const localStyles = StyleSheet.create({
   // New horizontal quick info styles
   quickRow: { paddingVertical: 4, paddingRight: 8, marginBottom: 8 },
   quickPill: { alignItems: 'center', marginRight: 14, minWidth: 76 },
-  iconCircle: { 
-    width: 70, 
-    height: 70, 
-    borderRadius: 12, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    backgroundColor: '#fff', 
-    borderWidth: 1, 
-    borderColor: '#e5e7eb',
+  iconCircle: {
+    backgroundColor: '#fff',        // bg-white
+    padding: 12,                    // p-3 (3 * 4 = 12)
+    borderRadius: 16,               // rounded-2xl
+    // shadow-sm properties
     shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowOffset: { width: 0, height: 2 }, // bottom-only bias
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 1,
-    marginHorizontal: 4
+    elevation: 2,
+    // flex flex-col items-center gap-1
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,                        // gap-1 (1 * 4 = 4)
+    // text-center is for text, applied via Text component
+    width: 70, 
+    height: 70,
+    
+    // width: 70, 
+    // height: 70, 
+    // borderRadius: 12, 
+    // alignItems: 'center', 
+    // justifyContent: 'center', 
+    // backgroundColor: '#fff', 
+    // borderWidth: 1, 
+    // borderColor: '#e5e7eb',
+    // shadowColor: '#000',
+    // shadowOpacity: 0.04,
+    // shadowOffset: { width: 0, height: 2 }, // bottom-only bias
+    // shadowRadius: 2,
+    // elevation: 1,
+    // marginHorizontal: 4
   },
-  quickTitle: { fontSize: 14, fontWeight: '700', marginTop: 6, marginBottom: 8, textAlign: 'center' },
+  quickTitle: { fontSize: 14, fontWeight: '700', marginTop: 6, marginBottom: 6, textAlign: 'center' },
   quickCaption: { fontSize: 11, color: '#6b7280' },
   // Legacy grid (unused now but kept for reference)
   quickGrid: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },

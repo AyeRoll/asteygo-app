@@ -2,15 +2,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp } from "firebase/app";
 import {
-  initializeAuth,
+  createUserWithEmailAndPassword,
   getAuth,
   getReactNativePersistence,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
+  initializeAuth,
   onAuthStateChanged,
-  signInAnonymously,
-  signInWithCustomToken,
+  signInWithEmailAndPassword,
+  signOut
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -58,6 +56,9 @@ export const login = (email, password) =>
   signInWithEmailAndPassword(auth, email, password);
 
 export const logout = () => signOut(auth);
+
+// Re-export onAuthStateChanged so consumers import from one place
+export { onAuthStateChanged };
 
 // Backwards-compatible aliases used across the codebase
 // Expose only the modular exports: auth, db, storage, and helper functions
