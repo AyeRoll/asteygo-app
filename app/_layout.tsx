@@ -1,10 +1,43 @@
-import { Stack } from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
+import { useEffect } from "react";
+import { ActivityIndicator, View } from "react-native";
+import { AuthProvider, useAuth } from "../providers/AuthProvider";
+
+  function AuthGate() {
+    const { user, initializing } = useAuth();
+    const segments = useSegments();
+    const router = useRouter();
+
+    useEffect(() => {
+      // If we are initializing, don't do anything
+      if (initializing) return;
+
+      if (segments[0] !== "(auth)" && !user){
+        // If the user is not logged in, redirect to the sign-in page
+        router.replace("/(auth)/signin");
+      } else if (segments[0] === "(auth)" && user) {
+        // If the user is logged in, redirect away from the sign-in page
+        router.replace("/(tabs)");
+      }
+    }, [user, initializing]);
+
+    if (initializing) {
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator size="large" />
+        </View>
+      );
+    } else {
+      return <Stack />;
+    }
+
+    }
+
 
 export default function RootLayout() {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      {/* This will load your (tabs) as the first stack screen */}
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
+    <AuthProvider>
+      <AuthGate />
+    </AuthProvider>
   );
 }
