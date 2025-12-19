@@ -351,7 +351,7 @@ export default function Dashboard() {
             )}
           </TouchableOpacity>
           <Text style={localStyles.greeting}>Hi, Astey!</Text>
-          <TouchableOpacity onPress={() => router.push('/screens/Profile')} style={localStyles.profileAvatar}>
+          <TouchableOpacity onPress={() => router.push('/Profile')} style={localStyles.profileAvatar}>
             <Text style={{ color: '#fff', fontWeight: '700' }}>A</Text>
           </TouchableOpacity>
         </View>

@@ -16,16 +16,10 @@ export default function Layout() {
     let label = '';
     if (rn.includes('index') || rn.includes('home') || rn === 'index') {
       iconName = focused ? 'home' : 'home-outline';
-      label = 'Home';
+      label = 'Discover';
     } else if (rn.includes('groups')) {
       iconName = focused ? 'people' : 'people-outline';
-      label = 'Groups';
-    } else if (rn.includes('map')) {
-      iconName = focused ? 'map' : 'map-outline';
-      label = 'Map';
-    } else if (rn.includes('expense') || rn.includes('expenses')) {
-      iconName = focused ? 'wallet' : 'wallet-outline';
-      label = 'Expenses';
+      label = 'Trips';
     } else if (rn.includes('profile') || rn.includes('user')) {
       iconName = focused ? 'person' : 'person-outline';
       label = 'Profile';
