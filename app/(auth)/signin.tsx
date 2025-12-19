@@ -26,6 +26,7 @@ export default function SignIn() {
 
     return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 16 }}>
+            <Text style={{ justifyContent: 'center', padding: 16 }}>Sign In</Text>
             <TextInput
                 placeholder="Email"
                 value={email}
@@ -44,7 +45,7 @@ export default function SignIn() {
             {error ? <Text style={{ color: 'red', marginBottom: 12 }}>{error}</Text> : null}
             <Button title={loading ? "Signing In..." : "Sign In"} onPress={handleLogin} disabled={loading} />
             
-            <TouchableOpacity onPress={() => router.push("/signup")} style={{ marginTop: 16 }}>
+            <TouchableOpacity onPress={() => router.push("/(auth)/signup")} style={{ marginTop: 16 }}>
                 <Text>Don't have an account? Sign Up</Text>
             </TouchableOpacity>
         

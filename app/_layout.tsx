@@ -21,14 +21,18 @@ import { AuthProvider, useAuth } from "../providers/AuthProvider";
       }
     }, [user, initializing]);
 
-    if (initializing) {
+    const needsRedirect =
+    (!user && segments[0] !== "(auth)") ||
+    (user && segments[0] === "(auth)");
+
+    if (initializing || needsRedirect) {
       return (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" />
         </View>
       );
     } else {
-      return <Stack />;
+      return <Stack screenOptions={{ headerShown: false }}/>;
     }
 
     }
