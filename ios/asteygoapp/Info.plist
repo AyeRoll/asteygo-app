@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>asteygoapp</string>
+          <string>asteygo-app</string>
           <string>com.adrianrolling.asteygo-app</string>
         </array>
       </dict>

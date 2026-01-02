@@ -1,23 +1,25 @@
 {
   "expo": {
-    "name": "asteygo-app",
-    "slug": "asteygo-app",
+    "name": "Asteygo",
+    "owner": "adrianrolling",
+    "slug": "asteygo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "asteygoapp",
+    "scheme": "asteygo",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.adrianrolling.asteygo-app"
+      "bundleIdentifier": "com.adrianrolling.asteygo"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.adrianrolling.asteygoapp"
     },
     "web": {
       "bundler": "metro",
@@ -35,7 +37,8 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-maps"
+      "expo-maps",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
