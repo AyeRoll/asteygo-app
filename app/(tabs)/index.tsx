@@ -8,19 +8,18 @@ import {
   Animated,
   FlatList,
   Image,
-  Linking,
   Modal,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import AddressAutocomplete from '../../components/AddressAutocomplete';
 import styles from "../../global";
+import { useAuth } from "../../providers/AuthProvider";
 import { Events } from '../../services/firestore';
 
 const categories: string[] = [
@@ -78,6 +77,12 @@ type Recommendation = {
 type QuickInfo = { temp: number | null; food: string | null; gas: string | null; hotel: string | null; ev?: string | null; location?: string };
 
 type QuickInfoModal = { visible: boolean; type: 'weather' | 'food' | 'gas' | 'hotel' | 'ev' | null; data: any | null };
+
+
+//-----------------MOCKS---------------------//
+
+
+
 
 const generateMockEvents = (location: string, category: string): EventItem[] => {
   const base = [
@@ -144,8 +149,15 @@ const generateMockRecommendations = (location: string, category: string): Recomm
   ];
 };
 
+//-----------------DASHBOARD-------------------//
+
 export default function Dashboard() {
   const router = useRouter();
+  const { user } = useAuth();
+
+  const displayName = user?.displayName || user?.email?.split('@')[0] || 'Traveler';
+  const firstName = displayName.split(' ')[0];
+  const firstInitial = firstName.charAt(0).toUpperCase();
   const [activeCategory, setActiveCategory] = useState<string>("Events");
   const [nearbyItems, setNearbyItems] = useState<EventItem[]>([]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
@@ -158,7 +170,7 @@ export default function Dashboard() {
   const [quickInfoModal, setQuickInfoModal] = useState<QuickInfoModal>({ visible: false, type: null, data: null });
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null as any);
   const [locationPermission, setLocationPermission] = useState<string>('undetermined');
-  // Marquee measurements and animation
+  const [hasNotifications, setHasNotifications] = useState<boolean>(false);
   const [bannerWidth, setBannerWidth] = useState(0);
   const [textWidth, setTextWidth] = useState(0);
   const bannerAnimation = useRef(new Animated.Value(0)).current;
@@ -184,7 +196,6 @@ export default function Dashboard() {
   // Banner animation effect (starts once sizes are known)
   useEffect(() => {
     if (bannerWidth > 0 && textWidth > 0) {
-      // Stop any previous loop
       bannerLoopRef.current?.stop?.();
       bannerAnimation.setValue(0);
       const distance = bannerWidth + (textWidth * 2)+ MARQUEE_GAP; // off-right to off-left
@@ -248,6 +259,10 @@ export default function Dashboard() {
     }
   };
 
+  const getNotificationStatus = async () => {
+    
+  }
+
   // Banner animation effect (starts once sizes are known)
   // useEffect(() => {
   //   if (bannerWidth > 0 && textWidth > 0) {
@@ -304,15 +319,15 @@ export default function Dashboard() {
     }
   };
 
-  const openMapApp = (addr?: string) => {
-    const encoded = encodeURIComponent(addr || location);
-    const url = Platform.select({
-      ios: `maps:0,0?q=${encoded}`,
-      android: `geo:0,0?q=${encoded}`,
-      default: `https://www.google.com/maps/search/?api=1&query=${encoded}`,
-    });
-    Linking.openURL(url).catch(() => Alert.alert("Unable to open map"));
-  };
+  // const openMapApp = (addr?: string) => {
+  //   const encoded = encodeURIComponent(addr || location);
+  //   const url = Platform.select({
+  //     ios: `maps:0,0?q=${encoded}`,
+  //     android: `geo:0,0?q=${encoded}`,
+  //     default: `https://www.google.com/maps/search/?api=1&query=${encoded}`,
+  //   });
+  //   Linking.openURL(url).catch(() => Alert.alert("Unable to open map"));
+  // };
 
   const EventCard: React.FC<{ item: EventItem; onPress?: (e: EventItem) => void }> = ({ item, onPress }) => (
     <TouchableOpacity onPress={() => onPress && onPress(item)} style={localStyles.card}>
@@ -335,7 +350,25 @@ export default function Dashboard() {
   <View style={[styles.safeArea, { paddingTop: insets.top, backgroundColor: '#f9fafb' }]}>
       <ScrollView contentContainerStyle={[combinedStyles.scrollViewContent, { paddingBottom: 32 + insets.bottom + 50 },]}>
         <View style={localStyles.headerRow}>
-          <TouchableOpacity 
+
+          <TouchableOpacity style={localStyles.notificationButton} onPress={() => router.push('../screens/Notifications')}>
+            <View>
+            <Ionicons 
+              name={hasNotifications ? 'notifications' : 'notifications-outline'} 
+              size={24} 
+              color={hasNotifications ? '#ffd000ea' : '#6b7280'} 
+              style={{ marginRight: 6 }}
+            />
+            {/* <Text style={localStyles.locationText}>{}</Text> */}
+            {hasNotifications && (
+              <View style={localStyles.notificationBadge}>
+                <View style={localStyles.badgeDot} />
+              </View>
+              )}
+            </View>
+          </TouchableOpacity>
+
+          {/* <TouchableOpacity 
             style={localStyles.locationButton} 
             onPress={locationPermission === 'granted' ? () => setShowLocationModal(true) : requestLocationPermission}
           >
@@ -349,10 +382,10 @@ export default function Dashboard() {
             {locationPermission !== 'granted' && (
               <Ionicons name="alert-circle" size={14} color="#ef4444" style={{ marginLeft: 4 }} />
             )}
-          </TouchableOpacity>
-          <Text style={localStyles.greeting}>Hi, Astey!</Text>
+          </TouchableOpacity> */}
+          <Text style={localStyles.greeting}>Hi, {firstName}!</Text>
           <TouchableOpacity onPress={() => router.push('/Profile')} style={localStyles.profileAvatar}>
-            <Text style={{ color: '#fff', fontWeight: '700' }}>A</Text>
+            <Text style={{ color: '#fff', fontWeight: '700' }}>{firstInitial}</Text>
           </TouchableOpacity>
         </View>
 
@@ -497,13 +530,13 @@ export default function Dashboard() {
         onAdd={(e: EventItem) => { handleAddEvent(e); setShowAddEvent(false); }}
       />
 
-      <LocationModal
+      {/* <LocationModal
         visible={showLocationModal}
         currentLocation={location}
         onClose={() => setShowLocationModal(false)}
         onSetLocation={(loc: string) => { setLocation(loc); setShowLocationModal(false); }}
         openMapApp={openMapApp}
-      />
+      /> */}
 
       <QuickInfoModal
         visible={quickInfoModal.visible}
@@ -578,32 +611,35 @@ function AddEventModal({ visible, onClose, onAdd }: { visible: boolean; onClose:
   );
 }
 
-function LocationModal({ visible, onClose, currentLocation, onSetLocation, openMapApp }: { visible: boolean; onClose: () => void; currentLocation: string; onSetLocation: (loc: string) => void; openMapApp: (addr?: string) => void }) {
-  const [value, setValue] = useState(currentLocation);
-  useEffect(() => setValue(currentLocation), [currentLocation, visible]);
-  return (
-    <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-      <View style={localStyles.modalOverlay}>
-        <View style={localStyles.modalContent}>
-          <Text style={localStyles.modalTitle}>Set Your Location</Text>
-          <View>
-            <AddressAutocomplete value={value} placeholder="City, State" onChange={(v) => setValue(v)} onSelect={(v) => setValue(v)} />
-          </View>
-          <TouchableOpacity onPress={() => { onSetLocation(value); }} style={[localStyles.modalBtn, { backgroundColor: '#ef4444' }]}><Text style={{ color: '#fff' }}>Set Location</Text></TouchableOpacity>
-          <View style={{ height: 12 }} />
-          <Text style={{ marginBottom: 8 }}>Open in map app</Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <TouchableOpacity onPress={() => openMapApp(value)} style={[localStyles.modalBtn, { flex: 1, marginRight: 6 }]}><Text>Open Maps</Text></TouchableOpacity>
-            <TouchableOpacity onPress={() => openMapApp(value)} style={[localStyles.modalBtn, { flex: 1, marginLeft: 6 }]}><Text>Google</Text></TouchableOpacity>
-          </View>
-          <View style={{ flexDirection: 'row', marginTop: 8 }}>
-            <TouchableOpacity onPress={onClose} style={[localStyles.modalBtn, { backgroundColor: '#eee' }]}><Text>Close</Text></TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  );
-}
+
+
+
+// function LocationModal({ visible, onClose, currentLocation, onSetLocation, openMapApp }: { visible: boolean; onClose: () => void; currentLocation: string; onSetLocation: (loc: string) => void; openMapApp: (addr?: string) => void }) {
+//   const [value, setValue] = useState(currentLocation);
+//   useEffect(() => setValue(currentLocation), [currentLocation, visible]);
+//   return (
+//     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
+//       <View style={localStyles.modalOverlay}>
+//         <View style={localStyles.modalContent}>
+//           <Text style={localStyles.modalTitle}>Set Your Location</Text>
+//           <View>
+//             <AddressAutocomplete value={value} placeholder="City, State" onChange={(v) => setValue(v)} onSelect={(v) => setValue(v)} />
+//           </View>
+//           <TouchableOpacity onPress={() => { onSetLocation(value); }} style={[localStyles.modalBtn, { backgroundColor: '#ef4444' }]}><Text style={{ color: '#fff' }}>Set Location</Text></TouchableOpacity>
+//           <View style={{ height: 12 }} />
+//           <Text style={{ marginBottom: 8 }}>Open in map app</Text>
+//           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+//             <TouchableOpacity onPress={() => openMapApp(value)} style={[localStyles.modalBtn, { flex: 1, marginRight: 6 }]}><Text>Open Maps</Text></TouchableOpacity>
+//             <TouchableOpacity onPress={() => openMapApp(value)} style={[localStyles.modalBtn, { flex: 1, marginLeft: 6 }]}><Text>Google</Text></TouchableOpacity>
+//           </View>
+//           <View style={{ flexDirection: 'row', marginTop: 8 }}>
+//             <TouchableOpacity onPress={onClose} style={[localStyles.modalBtn, { backgroundColor: '#eee' }]}><Text>Close</Text></TouchableOpacity>
+//           </View>
+//         </View>
+//       </View>
+//     </Modal>
+//   );
+// }
 
 function QuickInfoModal({ visible, type, data, onClose }: { visible: boolean; type: 'weather' | 'food' | 'gas' | 'hotel' | 'ev' | null; data: any; onClose: () => void }) {
   return (
@@ -658,6 +694,25 @@ const combinedStyles = {
 
 const localStyles = StyleSheet.create({
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
+  notificationButton: {
+    padding: 8,
+    paddingLeft: 28,
+    borderRadius: 12,
+  },
+  notificationBadge: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    elevation: 1,
+  },
+  badgeDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#ef4444',
+    borderWidth: 2,
+    borderColor: '#f9fafb',
+  },
   locationButton: { 
     flexDirection: 'row', 
     alignItems: 'center', 
@@ -670,14 +725,14 @@ const localStyles = StyleSheet.create({
     shadowRadius: 2,
   },
   greeting: {
-    marginLeft: 130,
+    alignSelf: 'center',
     padding: 8,
     fontWeight: '700',
     fontSize: 18,
     color: '#111827',
   },
   locationText: { fontWeight: '700' },
-  profileAvatar: { width: 44, height: 44, borderRadius: 12, backgroundColor: '#ef4444', alignItems: 'center', justifyContent: 'center', marginRight: 10 },
+  profileAvatar: { width: 44, height: 44, borderRadius: 12, backgroundColor: '#ef4444', alignItems: 'center', justifyContent: 'center', marginRight: 16 },
   searchWrap: { marginTop: 8, marginBottom: 12 },
   searchInput: { backgroundColor: '#fff', height: 44, borderRadius: 12, paddingHorizontal: 12, borderWidth: 1, borderColor: '#eee' },
   heroTitle: { fontSize: 28, fontWeight: '800', marginBottom: 24, marginTop: 8 },

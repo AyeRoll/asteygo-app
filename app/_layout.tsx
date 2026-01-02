@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { AuthProvider, useAuth } from "../providers/AuthProvider";
 
+
   function AuthGate() {
     const { user, initializing } = useAuth();
     const segments = useSegments();

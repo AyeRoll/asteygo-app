@@ -8,18 +8,19 @@ import {
   initializeAuth,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+  updateProfile
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDQ3_HwzxPnM0KIqkfMYXB8p-I6ufQ0Suo",
-  authDomain: "asteygo.firebaseapp.com",
-  projectId: "asteygo",
-  storageBucket: "asteygo.firebasestorage.app",
-  messagingSenderId: "941293890230",
-  appId: "1:941293890230:web:92ca49ccfc2f493d54d417",
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase (single instance)
@@ -49,8 +50,13 @@ try {
 export const auth = _auth;
 
 // Auth helper functions (use modular API and exported `auth`)
-export const register = (email, password) =>
-  createUserWithEmailAndPassword(auth, email, password);
+export const register = async (email, password, name) => {
+  const result = await createUserWithEmailAndPassword(auth, email, password);
+
+  if(name && result.user){
+    await updateProfile(result.user, { displayName: name});
+  }
+};
 
 export const login = (email, password) =>
   signInWithEmailAndPassword(auth, email, password);
