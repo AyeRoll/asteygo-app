@@ -8,17 +8,17 @@
     "icon": "./assets/images/icon.png",
     "scheme": "asteygo",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
+      "expo.ios.googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true,
       "bundleIdentifier": "com.adrianrolling.asteygo"
     },
     "android": {
+      "expo.android.googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
       "package": "com.adrianrolling.asteygoapp"
     },
     "web": {
@@ -38,7 +38,21 @@
         }
       ],
       "expo-maps",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-font",
+      "expo-image",
+      "@react-native-firebase/app",
+      "@react-native-firebase/firestore",
+      "@react-native-firebase/auth",
+      "@react-native-firebase/messaging",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
